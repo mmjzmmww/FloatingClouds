@@ -1,5 +1,7 @@
 # 浮云 · FloatingClouds
 
+> 📢 **交流群组**：https://t.me/tkwx123
+
 > 🙏 **特别感谢**：本项目基于 [Mingyueyixi/MaskWechat](https://github.com/Mingyueyixi/MaskWechat) 二改而来，衷心感谢原作者的开源贡献与基础工作！
 
 > 一款基于 **LSPosed** 的微信隐私保护模块，帮助你把指定"密友"从微信各个界面中隐藏起来——会话、通讯录、朋友圈、来电，一键隐身。
