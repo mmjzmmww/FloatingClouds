@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- 测试版日志目录：context.getFilesDir()/fc_log -->
+    <files-path name="fc_log" path="fc_log/" />
+</paths>

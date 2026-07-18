@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:name=".App"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Floatingclouds"
+        tools:targetApi="31">
+
+        <meta-data android:name="xposedmodule" android:value="true" />
+        <meta-data android:name="xposedminversion" android:value="102" />
+
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:autoRemoveFromRecents="true"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <!-- 在Android-11及以上，不能够通过调用 pm.setComponentEnabledSetting 禁用组件的方式来实现动态显示/隐藏图标 -->
+                <!-- 禁用后，图标将仍然存在，但是点击应用会进入系统的应用设置页 -->
+                <!-- 通过禁用/启用别名组件也不可以，只要存在一个category.LAUNCHER组件，即显示图标 -->
+
+                <!-- 取消launcher分类，使之在桌面无图标 -->
+                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+                <!-- 使用xpose manager可以启动它 -->
+                <category android:name="io.github.libxposed.category.MODULE_SETTINGS" />
+            </intent-filter>
+        </activity>
+
+        <!-- 测试版日志导出用 FileProvider（仅对外测试收集日志） -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+
+</manifest>

@@ -1,0 +1,114 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'top.mmjz.floatingclouds'
+    compileSdk 36
+    buildToolsVersion "36.0.0"
+
+    defaultConfig {
+        applicationId "top.mmjz.floatingclouds"
+        minSdk 24
+        targetSdk 36
+        versionCode 3180
+        versionName "3.0.199"
+        buildConfigField "String", "buildInfoJson64", "\"eyJ0aW1lIjowLCJicmFuY2giOiJkZXYiLCJjb21taXQiOiJ1bmtub3duIn0=\""
+        // 构建指纹：供测试版日志定位（git 短哈希 / 构建时间）。
+        // 注：git 命令在 CI/无 git 环境下为空字符串不报错。
+        def gitCommit = 'git rev-parse --short HEAD'.execute().text?.trim() ?: ""
+        def buildTime = new Date().format("yyyyMMdd_HHmmss", TimeZone.getTimeZone("UTC"))
+        buildConfigField "String", "GIT_COMMIT", "\"${gitCommit}\""
+        buildConfigField "String", "BUILD_TIME", "\"${buildTime}\""
+        buildConfigField "boolean", "IS_TEST_BUILD", "false"
+        buildConfigField "String", "FLAVOR", "\"\""
+        multiDexEnabled true
+
+        ndk {
+            abiFilters 'arm64-v8a', 'armeabi-v7a'
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('../release.keystore')
+            storePassword 'maskwechat'
+            keyAlias 'maskwechat'
+            keyPassword 'maskwechat'
+        }
+    }
+
+    buildTypes {
+        // ══ 对外测试版（=原 releaseTest）：不混淆可直接 AS 调试 + 保留全量日志，
+        //    但用 release.keystore 签名 + IS_TEST_BUILD=true，与硬性规则一致 ══
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            debuggable true
+            signingConfig signingConfigs.release
+            buildConfigField "boolean", "IS_TEST_BUILD", "true"
+            buildConfigField "String", "FLAVOR", "\"debug\""
+        }
+        release {
+            debuggable false
+            minifyEnabled true
+            shrinkResources false
+            signingConfig signingConfigs.release
+            proguardFiles 'proguard-rules.pro', 'proguard-rules-release.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    buildFeatures {
+        buildConfig = true
+        viewBinding = true
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'main/AndroidManifest.xml'
+            java.srcDirs = ['main/java']
+            res.srcDirs = ['main/res']
+            resources.srcDirs = ['main/resources']
+            assets.srcDirs = ['main/assets']
+        }
+    }
+
+    // ══ 归档 mapping.txt（按 versionCode 命名），供 retrace 还原混淆堆栈 ══
+    applicationVariants.configureEach { variant ->
+        if (variant.buildType.name in ["debug", "release"]) {
+            variant.assembleProvider.configure { t ->
+                t.doLast {
+                    def mappingSrc = file("${buildDir}/outputs/mapping/${variant.name}/mapping.txt")
+                    if (mappingSrc.exists()) {
+                        def outDir = file("${rootDir}/mapping-archive")
+                        outDir.mkdirs()
+                        def outFile = new File(outDir, "mapping-${variant.versionCode}-${variant.buildType.name}.txt")
+                        outFile.text = mappingSrc.text
+                        println "[MappingArchive] ${variant.name} -> ${outFile.absolutePath}"
+                    }
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    // libxposed API 102 — compileOnly（运行时由 Vector/LSPosed 框架提供）
+    compileOnly 'io.github.libxposed:api:102.0.0'
+
+    // DexKit — 字节码扫描
+    implementation 'org.luckypray:dexkit:2.0.0'
+
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+}

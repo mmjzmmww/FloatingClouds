@@ -1,0 +1,22 @@
+# ===== Gradle / 构建产物 =====
+.gradle/
+build/
+app-src/build/
+mapping-archive/
+
+# ===== 微信逆向产物（非插件源码，体积巨大） =====
+wechat_apk/
+wechat_base.apk
+wechat_base.zip
+
+# ===== 本地配置 =====
+local.properties
+
+# ===== 操作系统 / 编辑器 =====
+.DS_Store
+Thumbs.db
+*.iml
+.idea/
+
+# ===== 备份压缩包（放在桌面，不进仓库） =====
+*.zip

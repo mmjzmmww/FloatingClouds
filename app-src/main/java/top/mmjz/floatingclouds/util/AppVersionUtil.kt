@@ -1,0 +1,82 @@
+
+package top.mmjz.floatingclouds.util
+import top.mmjz.floatingclouds.util.AppContext
+
+import top.mmjz.floatingclouds.App
+import top.mmjz.floatingclouds.Constrant
+
+class AppVersionUtil {
+    companion object {
+        private var versionCode = -1
+        private var versionName = ""
+
+        @JvmStatic
+        fun getVersionName(): String? {
+            if (versionName.isBlank()) {
+                versionName = try {
+                    val pm = AppContext.context!!.packageManager
+                    val info = pm.getPackageInfo("com.tencent.mm", 0)
+                    info.versionName ?: ""
+                } catch (e: Exception) {
+                    StealthLog.e(e)
+                    ""
+                }
+            }
+            return versionName
+        }
+
+        @JvmStatic
+        fun getVersionCode(): Int {
+            if (versionCode == -1) {
+                versionCode = try {
+                    val pm = AppContext.context!!.packageManager
+                    val info = pm.getPackageInfo("com.tencent.mm", 0)
+                    info.versionCode
+                } catch (e: Exception) {
+                    StealthLog.e(e)
+                    -1
+                }
+            }
+            return versionCode
+        }
+
+        @JvmStatic
+        fun getSmartVersionName(): String {
+            return "${getVersionName()}(${getVersionCode()})"
+        }
+
+        @JvmStatic
+        fun isSupportWechat(): Boolean {
+            return when (getVersionCode()) {
+                Constrant.WX_CODE_8_0_22,
+                Constrant.WX_CODE_8_0_32,
+                Constrant.WX_CODE_8_0_33,
+                Constrant.WX_CODE_8_0_34,
+                Constrant.WX_CODE_8_0_35,
+                Constrant.WX_CODE_8_0_37,
+                Constrant.WX_CODE_8_0_38,
+                Constrant.WX_CODE_8_0_40,
+                Constrant.WX_CODE_8_0_41,
+                Constrant.WX_CODE_8_0_42,
+                Constrant.WX_CODE_8_0_43,
+                Constrant.WX_CODE_8_0_44,
+                Constrant.WX_CODE_8_0_45,
+                Constrant.WX_CODE_8_0_46,
+                Constrant.WX_CODE_8_0_47,
+                Constrant.WX_CODE_PLAY_8_0_42,
+                Constrant.WX_CODE_PLAY_8_0_48,
+                Constrant.WX_CODE_8_0_49,
+                Constrant.WX_CODE_8_0_50,
+                Constrant.WX_CODE_8_0_51,
+                Constrant.WX_CODE_8_0_53,
+                Constrant.WX_CODE_8_0_56,
+                Constrant.WX_CODE_8_0_58,
+                Constrant.WX_CODE_8_0_60,
+                Constrant.WX_CODE_8_0_70,
+                Constrant.WX_CODE_8_0_74
+                    -> true
+                else -> false
+            }
+        }
+    }
+}
