@@ -12,8 +12,8 @@ android {
         applicationId "top.mmjz.floatingclouds"
         minSdk 24
         targetSdk 36
-        versionCode 3180
-        versionName "3.0.199"
+        versionCode 3181
+        versionName "3.0.200"
         buildConfigField "String", "buildInfoJson64", "\"eyJ0aW1lIjowLCJicmFuY2giOiJkZXYiLCJjb21taXQiOiJ1bmtub3duIn0=\""
         // 构建指纹：供测试版日志定位（git 短哈希 / 构建时间）。
         // 注：git 命令在 CI/无 git 环境下为空字符串不报错。
